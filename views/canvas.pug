@@ -1,0 +1,22 @@
+head
+	style
+		include style.css
+	meta(name='viewport',content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+body
+	canvas#senjyo
+
+script(src="https://assets.snowsore.com/node_modules/socket.io-client/dist/socket.io.js")
+script(src="https://assets.snowsore.com/js/idanmaku.js")
+script.
+	(() => {
+		const socket = io();
+		socket.on('connect', () => {
+			socket.emit('joinRoom', window.location.pathname);
+		});
+		const cxt = document.getElementById('senjyo').getContext('2d');
+		const danmaku = souten(cxt);
+		socket.on('fired', (msg) => {
+			danmaku.fire(msg);
+		});
+	})();
+

@@ -1,12 +1,12 @@
 head
 	style
-		include style.css
+		include idmk.css
 	meta(name='viewport',content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
 body
 	form#cannon
-		input#ammo(autocomplete='off' style='width:20px')
+		input#ammo(autocomplete='off' autofocus)
 
-script(src="https://assets.snowsore.com/node_modules/socket.io-client/dist/socket.io.js")
+script(src="https://idmk.snowsore.com/js/socket.io.js")
 script.
 	(() => {
 		const socket = io();

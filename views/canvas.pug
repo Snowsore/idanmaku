@@ -1,22 +1,29 @@
 head
 	style
-		include style.css
+		include idmk.css
 	meta(name='viewport',content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
 body
 	canvas#senjyo
 
-script(src="https://assets.snowsore.com/node_modules/socket.io-client/dist/socket.io.js")
-script(src="https://assets.snowsore.com/js/idanmaku.js")
+script(src="https://idmk.snowsore.com/js/socket.io.js")
+script(src="https://idmk.snowsore.com/js/idanmaku.js")
 script.
 	(() => {
 		const socket = io();
 		socket.on('connect', () => {
-			socket.emit('joinRoom', window.location.pathname);
+			socket.emit('joinRoom', '/');
 		});
 		const cxt = document.getElementById('senjyo').getContext('2d');
-		const danmaku = souten(cxt);
+		const idanmaku = new Idanmaku(cxt);
+		function refresh() {
+			idanmaku.reFrame();
+			window.requestAnimationFrame(refresh);
+		}
+		refresh();
+
+		window.addEventListener("resize", idanmaku.setCtx);
+
 		socket.on('fired', (msg) => {
-			danmaku.fire(msg);
+			idanmaku.fire(msg);
 		});
 	})();
-

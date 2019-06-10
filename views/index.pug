@@ -1,0 +1,40 @@
+head
+	style
+		include idmk.css
+	meta(name='viewport',content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+body
+	canvas#senjyo
+	form#cannon
+		input#ammo(autocomplete='off' autofocus placeholder="DanmakuToSnowsore!")
+
+script(src="https://assets.snowsore.com/node_modules/socket.io-client/dist/socket.io.js")
+script(src="https://assets.snowsore.com/js/idanmaku.js")
+script.
+	let socket = io();
+
+	let canvas = document.getElementById('senjyo')
+	let ctx = canvas.getContext('2d');
+	let idanmaku = new Idanmaku(ctx);
+
+	socket.on('connect', () => {
+		socket.emit('joinRoom', '/');
+	});
+	let ammo = document.getElementById('ammo');
+	let cannon = document.getElementById('cannon');
+	cannon.addEventListener('submit', (e) => {
+		e.preventDefault();
+		socket.emit('fire', ammo.value);
+		ammo.value = '';
+		return false;
+	});
+	socket.on('fired', (msg) => {
+		idanmaku.fire(msg);
+	});
+
+	function refresh() {
+		idanmaku.reFrame();
+		window.requestAnimationFrame(refresh);
+	}
+	refresh();
+
+	window.addEventListener("resize", idanmaku.setCtx);
